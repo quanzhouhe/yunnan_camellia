@@ -243,7 +243,42 @@ cols[4].write(f"**生长型**\n{traits['growth_form']}")
 
 # 生态剖面图
 st.subheader("🌳 生态结构剖面")
-st.pyplot(plot_ecological_profile(selected))
+def plot_ecological_profile(period_name):
+    """绘制生态剖面图（支持中文）"""
+    # === 关键修复：设置中文字体 ===
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu Sans']  # 优先使用黑体/微软雅黑
+    plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
+    
+    fig, ax = plt.subplots(figsize=(6, 3))
+    
+    # 基础分层
+    layers = [
+        {"name": "乔木层", "height": 25, "color": "#2e7d32", "label": "栲、石栎"},
+        {"name": "亚乔木层", "height": 12, "color": "#4caf50", "label": "山茶、木荷"},
+        {"name": "灌木层", "height": 4, "color": "#8bc34a", "label": "杜鹃、小檗"},
+        {"name": "草本层", "height": 1, "color": "#cddc39", "label": "蕨类、苔藓"}
+    ]
+    
+    # 人工时期特殊处理
+    if any(kw in period_name for kw in ["南诏", "明代", "清代", "现代"]):
+        layers = [
+            {"name": "孤立古树", "height": 8, "color": "#e91e63", "label": "云南山茶"},
+            {"name": "庭院地被", "height": 1, "color": "#795548", "label": "铺装/草坪"}
+        ]
+    
+    y = 0
+    for layer in layers:
+        height = layer["height"]
+        ax.barh([0], [height], left=y, color=layer["color"], edgecolor='k', alpha=0.8)
+        ax.text(y + height/2, 0, f"{layer['name']}\n{layer['label']}", 
+                ha='center', va='center', fontsize=8, color='white')
+        y += height
+    
+    ax.set_xlim(0, max(30, y))
+    ax.set_ylim(-0.5, 0.5)
+    ax.axis('off')
+    ax.set_title(f"生态剖面示意（{period_name}）", fontsize=10)
+    return fig
 
 # 底部说明
 st.markdown("---")
