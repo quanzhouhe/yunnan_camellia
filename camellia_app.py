@@ -142,7 +142,7 @@ periods = {
 def plot_ecological_profile(period_name):
     """绘制生态剖面图（支持中文）"""
     # === 关键修复：设置中文字体 ===
-   plt.rcParams['font.sans-serif'] = ['Noto Sans CJK SC', 'Noto Sans CJK', 'DejaVu Sans']
+    plt.rcParams['font.sans-serif'] = ['Noto Sans CJK SC', 'Noto Sans CJK', 'DejaVu Sans']
     plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
     
     fig, ax = plt.subplots(figsize=(6, 3))
